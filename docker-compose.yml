@@ -1,0 +1,36 @@
+version: '3'
+services:
+  sample-flask:
+    build:
+        context: ./sample-flask
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - REDIS_URL=redis://redis:6379
+    volumes:
+        - ./sample-flask:/app
+
+  sample-flask-worker:
+    build:
+        context: ./sample-flask
+        dockerfile: ./worker.Dockerfile
+    environment:
+      - REDIS_URL=redis://redis:6379
+    volumes:
+        - ./sample-flask:/app
+    depends_on: 
+        - redis
+
+  rq-dashboard:
+    image: eoranged/rq-dashboard
+    ports:
+      - "9181:9181"
+    environment: 
+     - RQ_DASHBOARD_REDIS_URL=redis://redis:6379
+    depends_on: 
+      - redis
+  
+  redis:
+    image: "redis:alpine" # Lightweight redis image
+
