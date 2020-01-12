@@ -8,8 +8,6 @@ RUN pip install -r /app/requirements.txt
 
 COPY . /app
 
-EXPOSE 5000
-
 WORKDIR /app
 
 CMD ["flask", "rq", "worker"]
